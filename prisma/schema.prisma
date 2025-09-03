@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Board {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  name        String
+  description String?
+  order       Int       @default(0)
+  threads     Thread[]
+}
+
+model Thread {
+  id         Int      @id @default(autoincrement())
+  boardId    Int
+  title      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  bumpedAt   DateTime @default(now())
+  isArchived Boolean  @default(false)
+  posts      Post[]
+  board      Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id         Int      @id @default(autoincrement())
+  threadId   Int
+  no         Int
+  name       String?  // 表示名（任意）
+  trip       String?  // トリップ（任意）
+  idHash     String   // 匿名ID（短縮）
+  body       String
+  sage       Boolean  @default(false)
+  isHidden   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  thread     Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, no])
+  @@index([threadId])
+}
