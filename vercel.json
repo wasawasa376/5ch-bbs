@@ -10,8 +10,5 @@
       "runtime": "nodejs18.x"
     }
   },
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "ID_SALT": "@id_salt"
-  }
+
 }
